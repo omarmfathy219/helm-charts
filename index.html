@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Omar Fathy's Kubernetes Helm Charts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #326CE5;
+            --secondary: #FDD835;
+            --dark: #1A202C;
+            --light: #F8F9FA;
+            --success: #48BB78;
+            --danger: #F56565;
+            --warning: #ED8936;
+            --info: #4299E1;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header & Navigation */
+        header {
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+        
+        .cta-button {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .cta-button:hover {
+            background-color: #2658c8;
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #1a44a5 100%);
+            color: white;
+            padding: 9rem 0 5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .hero-buttons .cta-button {
+            background-color: var(--secondary);
+            color: var(--dark);
+        }
+        
+        .hero-buttons .cta-button:hover {
+            background-color: #e8c620;
+        }
+        
+        .hero-buttons .secondary-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .hero-buttons .secondary-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .helm-command {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            display: flex;
+            align-items: center;
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        
+        .helm-command code {
+            flex-grow: 1;
+        }
+        
+        .copy-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .copy-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -50px;
+        }
+        
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -50px;
+            left: 10%;
+        }
+        
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            top: 30%;
+            right: 20%;
+        }
+        
+        /* Charts Section */
+        .charts-section {
+            padding: 5rem 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        
+        .section-header p {
+            font-size: 1.1rem;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .chart-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .chart-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chart-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #2658c8 100%);
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-icon {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+        
+        .chart-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .chart-version {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .chart-body {
+            padding: 1.5rem;
+        }
+        
+        .chart-description {
+            margin-bottom: 1.5rem;
+            color: #555;
+        }
+        
+        .chart-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tag {
+            background-color: #f3f4f6;
+            color: #555;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        .chart-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .chart-link {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            flex: 1;
+            text-align: center;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .primary-link {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .primary-link:hover {
+            background-color: #2658c8;
+            transform: translateY(-2px);
+        }
+        
+        .secondary-link {
+            background-color: #f3f4f6;
+            color: var(--dark);
+        }
+        
+        .secondary-link:hover {
+            background-color: #e5e7eb;
+            transform: translateY(-2px);
+        }
+        
+        /* Features Section */
+        .features-section {
+            padding: 5rem 0;
+            background-color: #eef1f8;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+            text-align: center;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 5rem 0;
+        }
+        
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .step {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .step-number {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            font-weight: 700;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .step-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        
+        .step-content p {
+            color: #555;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+        
+        .footer-logo {
+            max-width: 300px;
+        }
+        
+        .footer-logo h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-logo p {
+            opacity: 0.7;
+        }
+        
+        .footer-links h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links ul {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            opacity: 0.7;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.7;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .step {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+        
+        /* Animations */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        .chart-card:hover .chart-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header & Navigation -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png" alt="Kubernetes Logo">
+                    <span>Omar's Helm Charts</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#charts">Charts</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how-it-works">How It Works</a></li>
+                    <li><a href="https://github.com/omarmfathy219" target="_blank">GitHub</a></li>
+                </ul>
+                <a href="#charts" class="cta-button">Get Started</a>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Enhance Your Kubernetes Experience</h1>
+                <p>A collection of carefully crafted Helm charts to solve common Kubernetes challenges</p>
+                <div class="hero-buttons">
+                    <a href="#charts" class="cta-button">Browse Charts</a>
+                    <a href="https://github.com/omarmfathy219/helm-charts" target="_blank" class="secondary-button">View on GitHub</a>
+                </div>
+                <div class="helm-command">
+                    <code>helm repo add omarmfathy219 https://omarmfathy219.github.io/helm-charts/</code>
+                    <button class="copy-button" onclick="copyToClipboard('helm repo add omarmfathy219 https://omarmfathy219.github.io/helm-charts/')">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="floating-shapes">
+                <div class="shape shape-1"></div>
+                <div class="shape shape-2"></div>
+                <div class="shape shape-3"></div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Charts Section -->
+    <section id="charts" class="charts-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Available Charts</h2>
+                <p>Browse our collection of Helm charts designed to solve common Kubernetes challenges</p>
+            </div>
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3 class="chart-title">stuck-pod-cleaner</h3>
+                        <span class="chart-version">v0.1.0</span>
+                        <div class="chart-icon">
+                            <i class="fas fa-broom"></i>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <p class="chart-description">
+                            Automatically clean up pods stuck in Terminating state, preventing resource leaks and deployment blocks.
+                        </p>
+                        <div class="chart-tags">
+                            <span class="tag">kubernetes</span>
+                            <span class="tag">pods</span>
+                            <span class="tag">maintenance</span>
+                            <span class="tag">cleanup</span>
+                        </div>
+                        <div class="chart-links">
+                            <a href="https://github.com/omarmfathy219/k8s-stuck-pod-cleaner" target="_blank" class="chart-link primary-link">
+                                <i class="fab fa-github"></i> GitHub
+                            </a>
+                            <a href="https://github.com/omarmfathy219/k8s-stuck-pod-cleaner#readme" target="_blank" class="chart-link secondary-link">
+                                <i class="fas fa-book"></i> Docs
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Placeholder for future charts -->
+                <div class="chart-card" style="opacity: 0.6">
+                    <div class="chart-header">
+                        <h3 class="chart-title">Coming Soon</h3>
+                        <span class="chart-version">v0.0.0</span>
+                        <div class="chart-icon">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                    </div>
+                    <div class="chart-body">
+                        <p class="chart-description">
+                            More useful Kubernetes utilities are on the way. Check back soon or star the repository for updates.
+                        </p>
+                        <div class="chart-tags">
+                            <span class="tag">coming-soon</span>
+                        </div>
+                        <div class="chart-links">
+                            <a href="https://github.com/omarmfathy219" target="_blank" class="chart-link primary-link">
+                                <i class="fab fa-github"></i> Follow
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Use Our Charts</h2>
+                <p>All our charts follow best practices and are designed for production use</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Security First</h3>
+                    <p>All charts follow security best practices with proper RBAC configurations</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="feature-title">Highly Configurable</h3>
+                    <p>Extensive configuration options to adapt to your specific needs</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-feather"></i>
+                    </div>
+                    <h3 class="feature-title">Lightweight</h3>
+                    <p>Minimal resource footprint to run efficiently in any environment</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <h3 class="feature-title">Production Ready</h3>
+                    <p>Tested in real-world production environments</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>How to Use Our Charts</h2>
+                <p>Getting started is simple and straightforward</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Add the Helm Repository</h3>
+                        <p>Add our Helm repository to your Helm configuration to access all available charts.</p>
+                        <pre><code>helm repo add omarmfathy219 https://omarmfathy219.github.io/helm-charts/</code></pre>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Update Your Repository</h3>
+                        <p>Make sure you have the latest version of all charts by updating your repositories.</p>
+                        <pre><code>helm repo update</code></pre>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Install the Chart</h3>
+                        <p>Install the chart with default configuration or customize it to your needs.</p>
+                        <pre><code>helm install stuck-pod-cleaner omarmfathy219/stuck-pod-cleaner</code></pre>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Customize (Optional)</h3>
+                        <p>Use custom values to configure the chart for your specific requirements.</p>
+                        <pre><code>helm install stuck-pod-cleaner omarmfathy219/stuck-pod-cleaner --set podDeletion.minTimeBeforeDeletion=5</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>Omar's Helm Charts</h3>
+                    <p>A collection of Helm charts designed to enhance your Kubernetes experience with reliable, production-ready solutions.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/omarmfathy219" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://twitter.com/omarmfathy219" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://linkedin.com/in/omarmfathy219" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Charts</h4>
+                    <ul>
+                        <li><a href="https://github.com/omarmfathy219/k8s-stuck-pod-cleaner" target="_blank">stuck-pod-cleaner</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://helm.sh/docs/" target="_blank">Helm Documentation</a></li>
+                        <li><a href="https://kubernetes.io/docs/home/" target="_blank">Kubernetes Documentation</a></li>
+                        <li><a href="https://github.com/omarmfathy219/helm-charts" target="_blank">GitHub Repository</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Omar Fathy. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                alert('Command copied to clipboard!');
+            }, function(err) {
+                console.error('Could not copy text: ', err);
+            });
+        }
+        
+        // Animation for the floating shapes
+        document.addEventListener('DOMContentLoaded', function() {
+            const shapes = document.querySelectorAll('.shape');
+            shapes.forEach((shape, index) => {
+                shape.style.animation = `float ${3 + index}s ease-in-out infinite`;
+                shape.style.animationDelay = `${index * 0.5}s`;
+            });
+        });
+    </script>
+</body>
+</html>
