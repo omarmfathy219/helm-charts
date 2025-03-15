@@ -1,12 +1,14 @@
 apiVersion: v1
 entries:
   stuck-pod-cleaner:
-  - apiVersion: v2
+  - annotations:
+      artifacthub.io/official: "true"
+    apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-03-15T02:34:55.745147+02:00"
+    created: "2025-03-15T08:02:36.471366+02:00"
     description: A Helm chart for Kubernetes stuck pod cleaner - automatically cleans
       up pods stuck in Terminating state
-    digest: af407404091fdcb7da06c7619ec9693791568b727914a50a4b8173c4712b85a0
+    digest: 7b45c6d4617330023d97cc9ddf3fd1adff3e23a80aa64dddcac02ab684e82189
     home: https://github.com/omarmfathy219/k8s-stuck-pod-cleaner
     icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.png
     keywords:
@@ -26,4 +28,4 @@ entries:
     urls:
     - https://omarmfathy219.github.io/helm-charts/stuck-pod-cleaner-0.1.0.tgz
     version: 0.1.0
-generated: "2025-03-15T02:34:55.743809+02:00"
+generated: "2025-03-15T08:02:36.470658+02:00"
